@@ -77,8 +77,7 @@ module ActsAsVotable
       end
 
       # find the vote
-      votes = find_votes_by(options[:voter], options[:vote_scope])
-
+      votes = find_votes_by(options[:voter], options[:vote_scope], unscoped: true)
       if votes.count == (0) || options[:duplicate]
         # this voter has never voted
         vote = ActsAsVotable::Vote.new(
@@ -89,6 +88,7 @@ module ActsAsVotable
       else
         # this voter is potentially changing his vote
         vote = votes.last
+        vote.deleted_at = nil
       end
 
       last_update = vote.updated_at
@@ -136,14 +136,18 @@ module ActsAsVotable
     end
 
     # results
-    def find_votes_for(extra_conditions = {})
-      votes_for.where(extra_conditions)
+    def find_votes_for(extra_conditions = {}, unscoped = nil)
+      if unscoped
+        votes_for.unscoped.where(extra_conditions)
+      else
+        votes_for.where(extra_conditions)
+      end
     end
 
-    def find_votes_by(voter, vote_scope)
-      find_votes_for(voter_id:   voter.id,
+    def find_votes_by(voter, vote_scope, unscoped = nil)
+      find_votes_for({voter_id:   voter.id,
                      vote_scope: vote_scope,
-                     voter_type: voter.class.base_class.name)
+                     voter_type: voter.class.base_class.name}, unscoped)
     end
 
     def get_up_votes(options = {})
