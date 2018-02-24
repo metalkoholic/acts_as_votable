@@ -13,6 +13,8 @@ module ActsAsVotable
         :vote_flag, :vote_scope
     end
 
+    after_create :add_point_to_object_owner
+
     belongs_to :votable, polymorphic: true
     belongs_to :voter, polymorphic: true
 
@@ -23,5 +25,10 @@ module ActsAsVotable
 
     validates_presence_of :votable_id
     validates_presence_of :voter_id
+
+    private
+    def add_point_to_object_owner
+        votable.add_point_to_owner
+    end
   end
 end
