@@ -138,7 +138,9 @@ module ActsAsVotable
     # results
     def find_votes_for(extra_conditions = {}, unscoped = nil)
       if unscoped
-        votes_for.unscoped.where(extra_conditions)
+        self.class.unscoped do
+          votes_for.where(extra_conditions)
+        end
       else
         votes_for.where(extra_conditions)
       end
