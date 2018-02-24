@@ -4,6 +4,7 @@ require "acts_as_votable/helpers/words"
 
 module ActsAsVotable
   class Vote < ::ActiveRecord::Base
+    acts_as_paranoid
     include Helpers::Words
 
     if defined?(ProtectedAttributes)
@@ -13,7 +14,7 @@ module ActsAsVotable
         :vote_flag, :vote_scope
     end
 
-    belongs_to :votable, polymorphic: true
+    belongs_to :votable, polymorphic: true, touch: true
     belongs_to :voter, polymorphic: true
 
     scope :up, -> { where(vote_flag: true) }

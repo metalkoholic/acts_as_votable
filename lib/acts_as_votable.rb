@@ -2,6 +2,7 @@
 
 require "active_record"
 require "active_support/inflector"
+require 'paranoia'
 
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
