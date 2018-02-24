@@ -137,6 +137,7 @@ module ActsAsVotable
 
     # results
     def find_votes_for(extra_conditions = {}, unscoped = nil)
+      # handle unscoped relation
       if unscoped
         self.class.unscoped do
           votes_for.where(extra_conditions)
